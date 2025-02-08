@@ -90,7 +90,7 @@ struct movie* processMovieFile(char* filePath){
 
     // Free the memory allocated by getline for currLine
     free(currLine);
-    
+
     // Close the file
     fclose(movieFile);
     return head;
@@ -102,7 +102,7 @@ int main(void){
 
     while(1){
         printf("\n1. Select file to process");
-        printf("\n2. Exit the program");
+        printf("\n2. Exit the program\n");
         printf("\nEnter a choice 1 or 2: ");
         scanf("%d", &choice);
 
@@ -111,34 +111,37 @@ int main(void){
             continue;
         }
 
-        break;
-    }
+        if(choice == 2){
+            break;
+        }
 
-    if(choice == 1){
-        while(1){
-            printf("\nWhich file you want to process?");
-            printf("\nEnter 1 to pick the largest file");
-            printf("\nEnter 2 to pick the smallest file");
-            printf("\nEnter 3 to specify the name of a file\n");
-            printf("\nEnter a choice from 1 to 3: ");
-            scanf("%d", &choiceFile);
-
-            if(choiceFile != 1 && choiceFile != 2 && choiceFile != 3){
-                printf("\nYou entered an incorrect choice. Try again.\n");
-            }
-
-            if(choiceFile == 1){
-                break;
-            }
-
-            if(choiceFile == 2){
-                break;
-            }
-
-            if(choiceFile == 3){
-                break;
+        if(choice == 1){
+            while(1){
+                printf("\nWhich file you want to process?");
+                printf("\nEnter 1 to pick the largest file");
+                printf("\nEnter 2 to pick the smallest file");
+                printf("\nEnter 3 to specify the name of a file\n");
+                printf("\nEnter a choice from 1 to 3: ");
+                scanf("%d", &choiceFile);
+    
+                if(choiceFile != 1 && choiceFile != 2 && choiceFile != 3){
+                    printf("\nYou entered an incorrect choice. Try again.\n");
+                }
+    
+                if(choiceFile == 1){
+                    break;
+                }
+    
+                if(choiceFile == 2){
+                    break;
+                }
+    
+                if(choiceFile == 3){
+                    break;
+                }
             }
         }
+        continue;
     }
     return 0;
 }
