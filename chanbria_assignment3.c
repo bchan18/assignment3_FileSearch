@@ -101,7 +101,7 @@ struct movie* processMovieFile(char* filePath){
 
 char* largestFile(){
     char* largestFile = NULL;
-    off_t totalSize;
+    off_t totalSize = 0;
     int len;
 
     // Open the current directory
@@ -116,15 +116,16 @@ char* largestFile(){
             len = strlen(entry->d_name);
             // Checks if file contains ".csv"
             if(strcmp(entry->d_name + len - 4, ".csv") == 0){
+                // Get meta-data for the current entry
                 stat(entry->d_name, &dirStat);
+                // Checks and updates the largest file
                 if(dirStat.st_size > totalSize){
                     totalSize = dirStat.st_size;
+                    largestFile = strdup(entry->d_name);
                 }
-                largestFile = strdup(entry->d_name);
             }
         }
     }
-
     // Close the directory
     closedir(currDir);
     return largestFile;
