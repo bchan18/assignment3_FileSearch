@@ -132,7 +132,52 @@ char* largestFile(){
 }
 
 char* smallestFile(){
+    char* smallestFile = NULL;
+    off_t totalSize = 0;
+    int len;
 
+    // Open the current directory
+    DIR* currDir = opendir(".");
+    struct dirent *entry;
+    struct stat dirStat;
+
+    // Go through all the entries
+    while((entry = readdir(currDir)) != NULL){
+        // Checks if file contains "movies_"
+        if(strncmp(entry->d_name, "movies_", 7) == 0){
+            len = strlen(entry->d_name);
+            // Checks if file contains ".csv"
+            if(strcmp(entry->d_name + len - 4, ".csv") == 0){
+                // Get meta-data for the current entry
+                stat(entry->d_name, &dirStat);
+                if(totalSize == 0){
+                    totalSize = dirStat.st_size;
+                }
+                // Checks and updates the smallest file
+                if(dirStat.st_size < totalSize){
+                    totalSize = dirStat.st_size;
+                    smallestFile = strdup(entry->d_name);
+                }
+            }
+        }
+    }
+    // Close the directory
+    closedir(currDir);
+    return smallestFile;
+}
+
+int fileExist(const char* fileName){
+    DIR* currDir = opendir(".");
+    struct dirent *entry;
+
+    while((entry = readdir(currDir)) != NULL){
+        if(strcmp(entry->d_name, fileName) == 0){
+            closedir(currDir);
+            return 1;
+        }
+    }
+    closedir(currDir);
+    return 0;
 }
 
 void processFile(){
@@ -179,16 +224,24 @@ int main(void){
                 }
     
                 if(choiceFile == 2){
+                    file = smallestFile();
                     break;
                 }
     
                 if(choiceFile == 3){
-                    break;
+                    printf("Enter the complete file name: ");
+                    scanf("%s", fileName);
+                    if(fileExist(fileName)){
+                        file = fileName;
+                        break;
+                    }
+                    printf("\nThe file %s was not found. Try again\n", fileName);
+                    continue;
                 }
             }
         }
+        printf("Now processing the chosen file named %s\n", file);
         
-        printf("\nNow processing the chosen file named %s\n", file);
     }
     return 0;
 }
