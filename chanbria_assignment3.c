@@ -1,6 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h> 
 #include <string.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <dirent.h>
 
 #define ONID "chanbria"
 
@@ -96,9 +99,50 @@ struct movie* processMovieFile(char* filePath){
     return head;
 }
 
+char* largestFile(){
+    char* largestFile = NULL;
+    off_t totalSize;
+    int len;
+
+    // Open the current directory
+    DIR* currDir = opendir(".");
+    struct dirent *entry;
+    struct stat dirStat;
+
+    // Go through all the entries
+    while((entry = readdir(currDir)) != NULL){
+        // Checks if file contains "movies_"
+        if(strncmp(entry->d_name, "movies_", 7) == 0){
+            len = strlen(entry->d_name);
+            // Checks if file contains ".csv"
+            if(strcmp(entry->d_name + len - 4, ".csv") == 0){
+                stat(entry->d_name, &dirStat);
+                if(dirStat.st_size > totalSize){
+                    totalSize = dirStat.st_size;
+                }
+                largestFile = strdup(entry->d_name);
+            }
+        }
+    }
+
+    // Close the directory
+    closedir(currDir);
+    return largestFile;
+}
+
+char* smallestFile(){
+
+}
+
+void processFile(){
+
+}
+
 int main(void){
     int choice;
     int choiceFile;
+    char* file;
+    char fileName[256];
 
     while(1){
         printf("\n1. Select file to process");
@@ -129,6 +173,7 @@ int main(void){
                 }
     
                 if(choiceFile == 1){
+                    file = largestFile();
                     break;
                 }
     
@@ -141,7 +186,8 @@ int main(void){
                 }
             }
         }
-        continue;
+        
+        printf("\nNow processing the chosen file named %s\n", file);
     }
     return 0;
 }
